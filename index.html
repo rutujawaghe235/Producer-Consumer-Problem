@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Virtual Retail Assistant Queue – Producer–Consumer Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <h1>Virtual Retail Assistant Queue</h1>
+    <p class="sub">Producer–Consumer (Bounded Buffer) simulator · Customers = Producers · Query Queue = Buffer · AI Server = Consumer</p>
+
+    <div class="card">
+      <h2>1 · Setup</h2>
+
+      <div class="row">
+        <label for="n"><b>Number of customers / queries:</b></label>
+        <select id="n">
+          <option>1</option>
+          <option>2</option>
+          <option selected>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select>
+      </div>
+
+      <div class="row inline-control">
+        <label for="capacity"><b>Queue capacity:</b></label>
+        <input id="capacity" type="number" min="1" step="1" value="5" class="small-input">
+      </div>
+
+      <div class="row inline-control split-control">
+        <label class="check-wrap" for="mutexToggle">
+          <input id="mutexToggle" type="checkbox">
+          <span>Disable mutex (demo race condition)</span>
+        </label>
+
+        <label for="speed"><b>Speed:</b></label>
+        <input id="speed" type="range" min="0.5" max="2.5" step="0.1" value="1">
+        <span id="speedValue" class="speed-value">1.0x</span>
+      </div>
+
+      <div id="inputs"></div>
+      <div class="err" id="err"></div>
+
+      <div class="row button-row">
+        <button id="start">▶ Start Simulation</button>
+        <button id="pause" class="sec" disabled>⏸ Pause</button>
+        <button id="resume" class="sec" disabled>⏯ Resume</button>
+        <button id="reset" class="sec">↺ Reset</button>
+      </div>
+    </div>
+
+    <div class="done-msg" id="done">✅ All queries processed successfully!</div>
+
+    <div class="card">
+      <h2>2 · Live Statistics</h2>
+      <div class="stats">
+        <div class="stat"><b id="qCap">5</b><span>Queue Capacity</span></div>
+        <div class="stat"><b id="sEnt">0</b><span>Queries Entered</span></div>
+        <div class="stat"><b id="sWait">0</b><span>Queries Waiting</span></div>
+        <div class="stat"><b id="sEmp">5</b><span>Empty Spaces</span></div>
+        <div class="stat"><b id="sProc">0</b><span>Processed</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3 · Simulation</h2>
+      <div class="flow">
+        <div class="label">CUSTOMERS / PRODUCERS</div>
+        <div class="custs" id="custs"></div>
+
+        <div class="arrow">↓</div>
+        <div class="label">QUERY QUEUE (FIFO · custom slots)</div>
+        <div class="queue" id="queue"></div>
+
+        <div class="arrow">↓</div>
+        <div class="label">AI PROCESSING SERVER / CONSUMER</div>
+        <div class="server" id="server">
+          <b>AI Server</b>
+          <div id="srvTxt" class="srv-text">Idle</div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <div class="label">AI RESPONSE</div>
+        <div class="resp" id="resp">No response yet</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>4 · Synchronization Status</h2>
+      <div class="sems">
+        <div class="sem"><code>empty</code> = <b id="vE">5</b><p id="tE"></p></div>
+        <div class="sem"><code>full</code> = <b id="vF">0</b><p id="tF"></p></div>
+        <div class="sem mx" id="mxBox"><code>mutex</code> = <b id="vM">1</b><p id="tM"></p></div>
+      </div>
+      <p class="sub note"><b>in</b> = <span id="pIn">0</span> (next insert slot) · <b>out</b> = <span id="pOut">0</span> (next remove slot) · both wrap around with <code>% 5</code></p>
+    </div>
+
+    <div class="card">
+      <h2>5 · Activity Log</h2>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
